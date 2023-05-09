@@ -18,19 +18,19 @@ Potworki to główny obiekt badań symulacji. Każdy z rodzajów będzie się r�
 | HP            | Punkty zdrowia określające żywotność potworka   |
 | Atak          | Siła ataku potworka w ramach interakcji         |
 | Zasięg        | Obszar, od którego potwór może ścigać innego potwora |
-| Szybkość      | Prędkość poruszania się potworka na mapie |
+| Szybkość      | Prędkość poruszania się potworka na mapie, decyduje też o tym który potworek atakuje jako pierwszy |
 | *XP | Poziom doświadczenia, prawdopodobnie rozbity na 3 osobne paski różnych rodzajów |
 
 *_Możliwość trybu gdzie XP jest jedyną statystyką_
 
-HP, Atak, Zasięg i Szybkość to statystyki ustalone na sztywno, nie są zmieniane w czasie życia potworka. **XP to najważniejsza statystyka.** Wszystkie potworki zaczynają od 0. Aby je zwiększyć, potworki mogą jeść jagody lub pokonywać inne potworki.
+**XP to najważniejsza statystyka.** Wszystkie potworki zaczynają od 0. Aby je zwiększyć, potworki mogą jeść jagody lub pokonywać inne potworki.
 
 Każdy z potworków może:
-- poruszać się po mapie - z ustaloną prędkością, w dowolnym kierunku (dzięki zastosowanio wektorów)
+- poruszać się po mapie - tylko po polach na który ma dostęp
 - jeść jagody - aby zwiększyć swoje XP
 - atakować - czyli poruszać się w stronę słabszego potworka, aby zredukować konkurencję oraz zwiększyć swoje XP
 - rozmnażać się - podział na dwa nowe potworki tego samego rodzaju (o jednej losowo zwiększonej statystyce) po przekroczeniu określonego poziomu XP. 
-- ewoluować - po zaistnieniu jakiegoś warunku, wstępnie zwiększenie XP innego rodzaju.
+- ewoluować - po zaistnieniu jakiegoś warunku, wstępnie zwiększenie XP innego rodzaju. Wówczas HP, Atak, Zasięg i Szybkość mogą się zmieniać.
 
 Byłyby cztery rodzaje potworków:
 | Rodzaj  |Dozwolone pola | Opis |
@@ -42,4 +42,4 @@ Byłyby cztery rodzaje potworków:
 
 Gdy potworki różnych rodzajów się spotykają to walczą ze sobą, walka przebiega turowo. Przegrany znika, wygrany dostaje jakiś procent jego XP.
 
-
+*Dodatkowo istnieje możliwość dodania grywalnego potworka, którym gracz będzie mógł się poruszać i atakować, jednak nie będzie mógł się rozmnażać.*
