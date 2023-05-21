@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Board {
     private int N = 1;
@@ -18,13 +19,14 @@ public class Board {
         return N;
     }
 
-    //generuje planszę o podanych
+    //generuje planszę o kształcie sześciokąta
     void initialize(int radius){
         int columnY = -N;
+        String types[] = {"basic","basic","basic", "woda", "las", "gory"};
+        Random rand = new Random();
         for(int x = -N; x < N+1; x++){ //x
             for(int y = columnY; y <= Math.abs(columnY); y+=2){ //y
-                //System.out.println(x + "%=" + y +": " + (x%2==y%2));
-                board.add(new Hexagon(x, y, radius));
+                this.board.add(new Hexagon(x, y, radius, types[rand.nextInt(types.length)]));
             }
             if(x < 0){
                 columnY--;
@@ -32,10 +34,11 @@ public class Board {
                 columnY++;
             }
         }
-        System.out.println(board);
-        System.out.println(board.size());
+        //System.out.println(board);
+        System.out.println("Inicjalizacja tablicy dla N = " + this.N + " (" + this.board.size() + " pól)");
     }
 
+    //rysuje mapę
     void draw(Graphics g, int size){
         for(Hexagon hex: board) {
             hex.draw(g, size);

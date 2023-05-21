@@ -1,14 +1,15 @@
 import javax.swing.*;
 import java.awt.*;
 class Main {
-
+    static int SIZE_CANVAS = 700;
     public static void main(String args[]) {
-        int SIZE_CANVAS = 200;
 
-        Board map = new Board(2); //plansza
-        int countRadius = (5+(map.getN()-1)*3);
-        int radius = SIZE_CANVAS/countRadius;
-        map.initialize(radius);
+        Simulation simulation = new Simulation();
+
+        ControlFrame cp = new ControlFrame(simulation);
+        cp.setVisible(true);
+
+        /*
 
         // ramka
         JFrame frame = new JFrame("Plansza");
@@ -29,11 +30,17 @@ class Main {
         saveM.add(saveM_txt);
         saveM.add(saveM_png);
         frame.getContentPane().add(BorderLayout.NORTH, mb);
+        */
+
 
         // płótno
-        DrawingCanvas m = new DrawingCanvas(SIZE_CANVAS, map);
+        /*DrawingCanvas m = new DrawingCanvas(SIZE_CANVAS, map);
         frame.add(m);
 
         frame.setVisible(true);
+
+        ControlPanel frame1=new ControlPanel();
+        frame1.pack();
+        frame1.setVisible(true);*/
     }
 }
