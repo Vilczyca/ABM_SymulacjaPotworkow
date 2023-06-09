@@ -6,6 +6,8 @@ public class Hexagon {
     private int radious = 0;
     private int height = 0;
     private String type = "ERROR";
+    private int x_co[] = new int[6];
+    private int y_co[] = new int[6];
 
 
     // KONSTRUKTORY
@@ -20,7 +22,9 @@ public class Hexagon {
         this.type = t;
 
         this.height = (int)(r * Math.sqrt(3) / 2);
-        int h = this.height;
+
+        setCoX();
+        setCoY();
     }
 
     //GETTERY
@@ -36,76 +40,111 @@ public class Hexagon {
         return y;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public int[] getX_co() {
+        return x_co;
+    }
+
+    public int[] getY_co() {
+        return y_co;
+    }
+
+
     //SETTERY
 
     public void setType(String type) {
         this.type = type;
     }
 
+
     // METODY
-    @Override // nadpisuje funkcję toString() aby wyświetlać współrzędne
+
+    // nadpisuje funkcję toString() aby wyświetlać współrzędne
+    @Override
     public String toString(){
         return "(" + x + ", " + y + ")";
     }
 
-    //
-    int[] setCoX(int size){
-        int x_co[] = new int[]{ //współrzędne x punktów względem środka
-                -this.radious / 2,
-                this.radious / 2,
-                this.radious,
-                this.radious / 2,
-                -this.radious / 2,
-                -this.radious};
-        //przesunięcie współrzędnych punktów -> przesunięcie względem środkowego sześciokąta + przesunięcie na środek Frame'a
-        for (int i = 0; i < 6; i++) {
-            x_co[i] += this.x*this.radious*1.5 + size/2;
-        }
-        return x_co;
+    //przesunięcie współrzędnych punktów -> przesunięcie względem środkowego sześciokąta + przesunięcie na środek Frame'a
+    public int moveCoX(){
+        return (int)(this.x*this.radious*1.5 + Main.SIZE_CANVAS/2);
     }
-    int[] setCoY(int size){
-        int y_co[] = new int[]{ //współrzędne y punktów względem środka
-            this.height,
-            this.height,
-            0,
-            -this.height,
-            -this.height,
-            0};
-        //przesunięcie współrzędnych punktów -> przesunięcie względem środkowego sześciokąta + przesunięcie na środek Frame'a
+
+    //przesunięcie współrzędnych punktów -> przesunięcie względem środkowego sześciokąta + przesunięcie na środek Frame'a
+    public int moveCoY(){
+        return (int)(this.y*this.height + Main.SIZE_CANVAS/2 + 36); //36 - żeby nie ucinało z góry
+    }
+
+    //ustawia współrzędne x
+    private void setCoX(){
+        //względem środka
+        x_co[0] = -this.radious / 2;
+        x_co[1] = this.radious / 2;
+        x_co[2] = this.radious;
+        x_co[3] = this.radious / 2;
+        x_co[4] = -this.radious / 2;
+        x_co[5] = -this.radious;
+        //przesunięcie
         for (int i = 0; i < 6; i++) {
-            y_co[i] += this.y*this.height + size/2 + 36; //36 - żeby nie ucinało z góry
+            x_co[i] += moveCoX();
         }
-        return y_co;
+    }
+
+    //ustawia współrzędne y
+    private void setCoY(){
+        //względem środka
+        y_co[0] = this.height;
+        y_co[1] = this.height;
+        y_co[2] = 0;
+        y_co[3] = -this.height;
+        y_co[4] = -this.height;
+        y_co[5] = 0;
+        //przesunięcie
+        for (int i = 0; i < 6; i++) {
+            y_co[i] +=  moveCoY();
+        }
+    }
+
+    //równanie linii
+    private float line(int x, int y,int x1, int y1, int x2, int y2) {
+        float a = (y1-y2)/(float)(x1 - x2);
+        float b = y1 - a*x1;  //y = ax+b => b = y-ax
+        return a*x + b - y;
+    }
+
+    // sprawdza czy hexagon ma w sobie dany punkt
+    public boolean containsPoint(int x, int y) {
+        for (int i = 0; i < 6; i++){
+            float l1 = line(x, y, x_co[i % 6], y_co[i % 6], x_co[(i+1) % 6], y_co[(i+1) % 6]);
+            float l2 = line(moveCoX()-10, moveCoY()-10, x_co[i % 6], y_co[i % 6], x_co[(i+1) % 6], y_co[(i+1) % 6]);
+            if(l1*l2 < 0){
+                return false;
+            }
+        }
+        return true;
     }
 
     //rysuje sześciokąt
-    void draw(Graphics g, int size) {
-
+    public void draw(Graphics g) {
         //ustalenie koloru na podstawie typu pola
-        switch (this.type){
-            case "basic":
-                g.setColor(new Color(153, 243, 123));
-                break;
-            case "woda":
-                g.setColor(new Color(128, 240, 255));
-                break;
-            case "las":
-                g.setColor(new Color(249, 255, 128));
-                break;
-            case "gory":
-                g.setColor(new Color(194, 201, 200));
+        switch (this.type) {
+            case "basic" -> g.setColor(new Color(153, 243, 123));
+            case "woda" -> g.setColor(new Color(128, 240, 255));
+            case "las" -> g.setColor(new Color(249, 255, 128));
+            case "gory" -> g.setColor(new Color(194, 201, 200));
         }
-        g.fillPolygon(setCoX(size), setCoY(size), 6);
+        g.fillPolygon(x_co, y_co, 6);
+        g.setColor(Color.black);
+        g.setFont(new Font("TimesRoman", Font.PLAIN, 10));
+        g.drawString(this.x + ", " + this.y, moveCoX()-10, moveCoY());
     }
 
-    Polygon getPolygon(Graphics g, int size){
-        return new Polygon(setCoX(size), setCoY(size), 6);
+    //rysuje czerwoną obwódkę
+    public void drawContour(Graphics g) {
+        g.setColor(Color.red);
+        g.drawPolyline(x_co, y_co, 6);
     }
-
-    void drawContour(Graphics g, int size){
-        g.setColor(new Color(255, 0, 0));
-        g.drawPolygon(setCoX(size), setCoY(size), 6);
-    }
-
-
 }
