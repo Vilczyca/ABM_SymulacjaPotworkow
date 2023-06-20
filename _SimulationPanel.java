@@ -4,10 +4,23 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Panel symulacji, na którym wyświetlana jest symulacja
+ */
 public class _SimulationPanel extends JPanel {
+    /**
+     * Symulacja, która jest wyświetlana
+     */
     Simulation simulation;
+    /**
+     * Płótno, na którym jest rysowana symulacja
+     */
     _DrawingCanvas drawingCanvas;
-    _SimulationPanel(_MainFrame mf){
+    /**
+     * Konstruktor
+     * @param mf zawiera informacje o symulacji i sposobie jej wyświetlania
+     */
+    _SimulationPanel(_MainFrame mf) {
         this.simulation = mf.getSimulation();
         this.drawingCanvas = new _DrawingCanvas(this.simulation);
 

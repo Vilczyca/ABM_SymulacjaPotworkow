@@ -1,45 +1,48 @@
-# Projekt: Ewoluujące potworki
-Symulacja typu Agent Based Model, inspirowana modelem Predator-Prey. Głównym celem jest zasymulowanie zachowań różnego rodzaju potworków, które mogą ewoluować.
+# Symulacja Potworków
 
-## Mapa, czyli miejsce akcji
-Mapa składałaby się z sześciokatnych pól. Byłoby ich kilka rodzajów, wstępnie:
-- pole podstawowe - łąki
-- pola specjalistyczne - woda, góry, lasy
+Julia Niśkiewicz (lider), Maksymilian Łukaszewski
 
-Na początku będzie ustalana wielkość mapy, mapa będzie generowana losowo. Każdy potworek będzie mógł poruszać się na polu podstawowym, a poszczególne rodzaje potworków na polach specjalistycznych.
+## Temat
 
-## "Jagody", czyli jedzenie
-Losowo generowane na mapie, są podstawowym pożywieniem potworków. Będzie ich kilka rodzajów. Każdy potworek (zwłaszcza basic) może "ewoluować" jeśli któryś rodzaj pokarmu który spożywa przeważa (np. ponad połowa to niebieskie jagody -> pływające). Wówczas zmienia się na inny typ potworka.
+Tematem niniejszej pracy jest zbadanie interakcji pomiędzy różnymi gatunkami potworków w turowej symulacji. Jest ona
+przykładem wieloagentowego modelu symulacyjnego (Agent Based Model, w skrócie ABM), inspirowana modelem Predator-Prey.
+Napisana została w języku Java. Głównym celem jest zbadanie, jakie umiejętności najbardziej zwiększają szanse na
+przeżycie gatunku - początkowa przewaga siły, możliwość ewolucji czy zdolność do rozmnażania.
 
-## Potworki, czyli Agenci
-Potworki to główny obiekt badań symulacji. Każdy z rodzajów będzie się różnił wstępnymi statystykami.
-| Statystyka    | Opis                                            |
-| ---           | ---                                             |
-| HP            | Punkty zdrowia określające żywotność potworka   |
-| Atak          | Siła ataku potworka w ramach interakcji         |
-| Zasięg        | Obszar, od którego potwór może ścigać innego potwora |
-| Szybkość      | Prędkość poruszania się potworka na mapie, decyduje też o tym który potworek atakuje jako pierwszy |
-| *XP | Poziom doświadczenia, prawdopodobnie rozbity na 3 osobne paski różnych rodzajów |
+## Opis zagadnienia symulacji w języku naturalnym
 
-*_Możliwość trybu gdzie XP jest jedyną statystyką_
+### Plansza oraz parametry początkowe
 
-**XP to najważniejsza statystyka.** Wszystkie potworki zaczynają od 0. Aby je zwiększyć, potworki mogą jeść jagody lub pokonywać inne potworki.
+“Środowisko”, w którym żyją potworki to plansza składająca się z sześciokątnych pól. Na każdym z nich może się znajdować
+tylko 1 osobnik lub jedzenie. Istnieje 5 rodzajów pól - łąka, góry, pustynia, woda, zatopione. Użytkownik może sam
+ustalić, jak będzie wyglądał krajobraz - zadaje procentowy udział poszczególnych typów pól, a także populację potworków,
+czyli ile procent pól będzie zasiedlonych przez potworki. Potwory oraz jedzenie poszczególnych rodzajów pojawią się na
+odpowiadających im polach.
 
-Każdy z potworków może:
-- poruszać się po mapie - tylko po polach na który ma dostęp
-- jeść jagody - aby zwiększyć swoje XP
-- atakować - czyli poruszać się w stronę słabszego potworka, aby zredukować konkurencję oraz zwiększyć swoje XP
-- rozmnażać się - podział na dwa nowe potworki tego samego rodzaju (o jednej losowo zwiększonej statystyce) po przekroczeniu określonego poziomu XP. 
-- ewoluować - po zaistnieniu jakiegoś warunku, wstępnie zwiększenie XP innego rodzaju. Wówczas HP, Atak, Zasięg i Szybkość mogą się zmieniać.
+### Interakcje pomiędzy potworkami (Agentami)
 
-Byłyby cztery rodzaje potworków:
-| Rodzaj  |Dozwolone pola | Opis |
-| ---     | ---           | ---|
-| Basic   | łąki          | domyślnie słabe ale szybko się rozmnażają |
-| Wodne   | łąki, woda    | silniejsze od basic |
-| Latające| łąki, góry    | silniejsze od basic |
-| Drzewne | łąki, lasy    | silniejsze od basic |
+Każdy potwór ma podstawową statystykę - punkty doświadczenia (EXP), które wpływają na ich możliwości. W każdej turze
+potworki mogą się poruszać, czyli przemieszczać się do najbliższego pola oraz walczyć między sobą, jeśli takowe pole
+będzie zajęte. Walkę wygrywa osobnik o większym EXP, w przypadku remisu przewagę ma atakujący. Zwycięzca dostaje punkty
+EXP przeciwnika, przegrany zostaje usunięty z symulacji. Jeśli potwór przemieści się na pole na którym znajduje się
+jedzenie zjada je, zyskując niewiele punktów doświadczenia.
 
-Gdy potworki różnych rodzajów się spotykają to walczą ze sobą, walka przebiega turowo. Przegrany znika, wygrany dostaje jakiś procent jego XP.
+### Rodzaje potworów (Agentów)
 
-*Dodatkowo istnieje możliwość dodania grywalnego potworka, którym gracz będzie mógł się poruszać i atakować, jednak nie będzie mógł się rozmnażać.*
+- Potwory podstawowe (Monster) - mają tylko podstawowe umiejętności
+- Potwory specjalistyczne
+    - Górskie (MountainMonster) - zdobywają 2 razy więcej doświadczenia niż inne potwory, przez co na początku są
+      silniejsze.
+    - Pustynne (DesertMonster) - jako jedyne są w stanie się rozmnażać po przeskoczeniu konkretnego progu doświadczenia.
+    - Wodne (LakeMonster) - są podobne do podstawowych, ale po osiągnięciu odpowiedniego poziomu EXP potrafią ewoluować
+      zyskując dodatkową umiejętność zatapiania pól, czyli przekształcania obecnie zajmowanego pola w pole “zatopione”,
+      na które inne potwory nie mogą wchodzić.
+
+### Panele sterujące oraz zbierane dane
+
+Po zadaniu parametrów początkowych użytkownik nie ma wpływu na to, co się dzieje na planszy, ale może dostosować
+obserwacje do swoich potrzeb. Po kliknięciu wybranego pola z planszy, w lewym panelu (Szczegóły) są wyświetlane
+informacje dotyczące między innymi potworów, jedzenia oraz samego terenu. Prawy panel (Stan symulacji) pozwala na
+sterowanie szybkością wyświetlania za pomocą suwaka(pokazuje co ile milisekund zmienia się “klatka” symulacji”),
+dostępne są również guziki do pauzowania oraz wychodzenia z symulacji. W momencie jej opuszczenia tworzy lub nadpisuje
+się plik “simulation_result.txt”, zawierający informacje o parametrach początkowych oraz końcowych (w momencie wyjścia).
